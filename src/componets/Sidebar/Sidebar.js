@@ -7,6 +7,7 @@ import { Navbar, Container } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import "./Sidebar.scss";
+import { Link } from 'react-router-dom';
 
 const Sidebar = () => {
     const [show, setShow] = useState(false);
@@ -17,9 +18,9 @@ const Sidebar = () => {
         <>
             <Navbar expand="lg" variant="light" bg="light">
                 <Container>
-                    <Navbar.Brand href="#">Template App</Navbar.Brand>
-                    <Button className= "sidebarToggle" variant="outline-secondary" onClick={handleShow}>
-                    <FontAwesomeIcon icon={faBars} beatFade size="xl" style={{color: "#000000",}} />
+                    <Navbar.Brand href="#">Musicfy</Navbar.Brand>
+                    <Button className="sidebarToggle" variant="outline-secondary" onClick={handleShow}>
+                        <FontAwesomeIcon icon={faBars} beatFade size="xl" style={{ color: "#000000", }} />
                     </Button>
 
                 </Container>
@@ -28,11 +29,17 @@ const Sidebar = () => {
 
             <Offcanvas show={show} onHide={handleClose}>
                 <Offcanvas.Header closeButton>
-                    <Offcanvas.Title>Offcanvas</Offcanvas.Title>
+                    <Offcanvas.Title>Menù</Offcanvas.Title>
                 </Offcanvas.Header>
                 <Offcanvas.Body>
-                    Some text as placeholder. In real life you can have the elements you
-                    have chosen. Like, text, images, lists, etc.
+                    <ul className="nav flex-column">
+                        <li className="nav-item">
+                            <Link to="/" className="nav-link active" onClick={handleClose}>Home</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link to="/songs" className="nav-link" onClick={handleClose}>Brani</Link>
+                        </li>
+                    </ul>
                 </Offcanvas.Body>
             </Offcanvas>
         </>

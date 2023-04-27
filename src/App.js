@@ -1,21 +1,22 @@
-import Header from "./componets/Header/Header";
-import Sidebar from "./componets/Sidebar/Sidebar";
+
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+
+import Layout from "./componets/Layout/Layout";
+import Home from "./componets/Home/Home";
+import Songs from "./componets/Songs/Songs";
 
 function App() {
-  return (
-    <>
-      <header>
-        {/* Navbar generica con elemneti link in orizzontale e responsive */}
-       {/*<Header/>*/}
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<Layout />}>
+                    <Route index element={<Home />} />
+                    <Route path="songs" element={<Songs />} />
+                </Route>
+            </Routes>
 
-       {/* Sidebar che scorre da sinistra verso destra e navBar con toggle button */}
-       <Sidebar/>
-      </header>  
-      <main>
-
-      </main>
-    </>
-  );
+        </Router>
+    );
 }
 
 export default App;
