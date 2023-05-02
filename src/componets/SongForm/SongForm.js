@@ -1,24 +1,42 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import useSWR from "swr";
+import { useGet, usePut } from "../_Hooks/Customs";
+import FetchSelect from "../FetchSelect/FetchSelect";
+
 
 const SongForm = () => {
 
     const { id } = useParams();
     
-    const fetcher = (url) => axios.get(url).then(result => result.data);
+    
 
     const [song, setSong] = useState({
         name:"",
         duration: 0,
         price: 0.0,
-        publishDate: null,
+        publishDate: "",
         idArtist: 0,
         idType: 0
     })
 
-    const {data, error} =  useSWR("http://localhost:3432/songs/" + id, fetcher); 
+    const {data, error} =  useGet("http://localhost:3432/songs", id);
+
+    const submitData = usePut("http://localhost:3432/songs", id);
+
+    useEffect(() => {
+        if(data){
+            setSong({
+                name: data.name,
+                duration: data.duration,
+                price: data.price,
+                publishDate: data.publishDate ? data.publishDate : "",
+                idArtist: data.idArtist,
+                idType: data.idType
+    
+            });
+        }
+    },[data] )
 
     const handleChange = (e) => {
         setSong((prevValues) => {
@@ -29,19 +47,25 @@ const SongForm = () => {
         })
     }
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        //codice per il salvataggio
+        submitData(song);
+    }
+
     return (
         <>
             <div className="m-2 p-2 border">
 
                 <h5>Modifica canzone</h5>
-                <form className="row">
+                <form className="row" onSubmit={handleSubmit}>
                     <div className="col-6">
                         <label className="form-label">Titolo</label>
                         <input className="form-control form-control-sm" name="name" value={song.name} onChange={handleChange}></input>
                     </div>
                     <div className="col-6">
                         <label className="form-label">Artista</label>
-                        <select className="form-control form-control-sm"></select>
+                        <FetchSelect className="form-control form-control-sm" name="idArtist" value={song.idArtist} onChange={handleChange} url={"http://localhost:3432/artists"}/>
                     </div>
                     <div className="col-4">
                         <label className="form-label">Data</label>
@@ -49,7 +73,7 @@ const SongForm = () => {
                     </div>
                     <div className="col-4">
                         <label className="form-label">Genere</label>
-                        <select className="form-control form-control-sm"/>
+                        <FetchSelect className="form-control form-control-sm" name="idType" value={song.idType} onChange={handleChange} url={"http://localhost:3432/types"}/>
 
                     </div>
                     <div className="col-2">

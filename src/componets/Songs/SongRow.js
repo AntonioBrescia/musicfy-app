@@ -1,14 +1,14 @@
-import axios from "axios";
-import useSWR from "swr";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { useGet } from "../_Hooks/Customs";
 
 const SongRow = ({ song }) => {
-    const fetcher = (url) => axios.get(url).then(result => result.data);
+   
 
-    const { data: type,  error: typeError} = useSWR("http://localhost:3432/types/" + song.idType, fetcher);
-    const {data: artist, error: artistError} = useSWR("http://localhost:3432/artists/" + song.idArtist,fetcher);
+    const { data: type,  error: typeError} = useGet("http://localhost:3432/types", song.idType)
+
+    const {data: artist, error: artistError} = useGet("http://localhost:3432/artists", song.idArtist)
     const performDelete = () => {};
 
     return(
