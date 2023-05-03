@@ -14,6 +14,7 @@ function App() {
                     <Route index element={<Home />} />
                     <Route path="songs" element={<Songs />}>
                         <Route path="edit/:id" element= {<SongForm/>}/>
+                        <Route path="new" element={<SongForm/>}/>
                     </Route>
                 </Route>
             </Routes>

@@ -1,14 +1,16 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { useGet, usePut } from "../_Hooks/Customs";
+import { Link, useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { useGet, usePut, usePost} from "../_Hooks/Customs";
 import FetchSelect from "../FetchSelect/FetchSelect";
+import Alert from "../Alert/Alert";
 
 
 const SongForm = () => {
 
     const { id } = useParams();
     
+
     
 
     const [song, setSong] = useState({
@@ -20,12 +22,23 @@ const SongForm = () => {
         idType: 0
     })
 
+    
+
+    const [alertShow, setAlertShow] = useState(false);    // VAriabile di stato per gestire l'alert 
+    const [alertMessage, setAlertMessage] = useState("");
+
     const {data, error} =  useGet("http://localhost:3432/songs", id);
 
-    const submitData = usePut("http://localhost:3432/songs", id);
+    const putData = usePut("http://localhost:3432/songs", id);   // usePut restituisce la funzione per il salvataggio dei  dati
+
+    const postData = usePost("http://localhost:3432/songs");     // usePostDate
+
+    const navigate = useNavigate();
+
+    const {mutate} = useOutletContext();      // useOutletcontext permette di reperire le propietà e/o funzioni passate al context dell'Outlet (vedi Songs.js)
 
     useEffect(() => {
-        if(data){
+        if(data && id != undefined){
             setSong({
                 name: data.name,
                 duration: data.duration,
@@ -50,7 +63,26 @@ const SongForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         //codice per il salvataggio
-        submitData(song);
+       
+        if(id > 0){
+            // se l'id è maggiore di 0 siamo in edit
+            putData(song, submitSuccess);         // data -> song; successFn -> submitSucces (vedi Customs.js / usePut)
+        }else{
+           postData(song, submitSuccess); 
+        }
+        
+
+    }
+
+    const submitSuccess = () => {
+        setAlertMessage("Salvataggio completato!");
+        setAlertShow(true);   
+    }
+
+    const alertDismiss = () => {
+        setAlertShow(false);
+        navigate("/songs", {replace: true});
+        mutate();
     }
 
     return (
@@ -69,11 +101,11 @@ const SongForm = () => {
                     </div>
                     <div className="col-4">
                         <label className="form-label">Data</label>
-                        <input className="form-control form-control-sm" name="publishDate" value={song.publishDate} onChange={handleChange}/>
+                        <input className="form-control form-control-sm" type="date" name="publishDate" value={song.publishDate.substring(0,10)} onChange={handleChange}/>
                     </div>
                     <div className="col-4">
                         <label className="form-label">Genere</label>
-                        <FetchSelect className="form-control form-control-sm" name="idType" value={song.idType} onChange={handleChange} url={"http://localhost:3432/types"}/>
+                        <FetchSelect className="form-control form-control-sm"  name="idType" value={song.idType} onChange={handleChange} url={"http://localhost:3432/types"}/>
 
                     </div>
                     <div className="col-2">
@@ -96,10 +128,7 @@ const SongForm = () => {
 
                 </form>
             </div>
-
-
-
-
+            <Alert show={alertShow} onHide={alertDismiss} message={alertMessage}/>
         </>
 
 
