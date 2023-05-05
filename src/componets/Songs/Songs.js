@@ -4,11 +4,12 @@ import { Link, Outlet } from "react-router-dom";
 import { useGet, useDelete} from "../_Hooks/Customs";
 import Alert from "../Alert/Alert";
 import { useState } from "react";
+import { URL_SONGS } from "../_Utils/Constants";
 
 
 const Songs = () => {
 
-    const {data, error, isLoading, mutate } = useGet("http://localhost:3432/songs");
+    const {data, error, isLoading, mutate } = useGet(URL_SONGS);
 
     const [alertShow, setAlertShow] = useState(false);
     const[alertMessage,setAlertMessage] = useState("");
@@ -49,6 +50,12 @@ const Songs = () => {
                                
             </div>
         );
+    }
+    else if(isLoading){
+        <div>Loading...</div>  /*Qui possiamo mettere un loader a tutto schermo con opacità*/ 
+    }
+    else if(error){
+        <div>Errore di caricamento</div> // Qui potete renderizzare un componente ad hoc oppure navigare a una pagina di errore
     }
 }
 export default Songs;

@@ -9,6 +9,7 @@ import { faBars } from '@fortawesome/free-solid-svg-icons';
 import "./Sidebar.scss";
 import { Link } from 'react-router-dom';
 
+
 const Sidebar = () => {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -38,6 +39,9 @@ const Sidebar = () => {
                         </li>
                         <li className="nav-item">
                             <Link to="/songs" className="nav-link" onClick={handleClose}>Brani</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link to="/artists" className="nav-link" onClick={handleClose}>Artisti</Link>
                         </li>
                     </ul>
                 </Offcanvas.Body>
